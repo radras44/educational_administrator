@@ -3,7 +3,7 @@ import * as XLSX from "xlsx"
 
 import { sessionHeaders } from "./axios/headers"
 import { StaticEntitiesType } from "./interfaces/interfaces"
-import { generateErrorMsg } from "./axios/reqUtils"
+import { genResErrorMsg } from "./axios/reqUtils"
 
 interface DBEstudiante {
   nombre_de_usuario: string
@@ -101,10 +101,24 @@ export class Synchronizer {
 
     try {
       const preprocessedData = jsonData.map(estudiante => {
+        //concatenar columnas
         let nombre_de_usuario = `${estudiante["Nombres"]} ${estudiante["Apellido Paterno"]} ${estudiante["Apellido Materno"]}`
         let rut = `${estudiante["Run"]}-${estudiante["Dígito Ver."]}`
-        let curso = this.staticEntities.cursos?.find(curso => curso.letra === estudiante["Letra Curso"] && curso.curso[0] === estudiante["Desc Grado"][0]).id || null
-        let genero = this.staticEntities.generos?.find(genero => genero.genero[0].toLowerCase() === estudiante["Genero"][0].toLowerCase()).id || null
+        //encontrar curso
+        let curso = this.staticEntities.cursos?.find(curso => curso.letra === estudiante["Letra Curso"] && curso.curso[0] === estudiante["Desc Grado"][0])
+        if(curso && curso != undefined){
+          curso = curso.id
+        }else{
+          return {
+            status : false,
+            error : `el estudiante ${nombre_de_usuario} no tiene un curso asignado o este no es valido`
+          }
+        }
+        //encontrar genero
+        let genero = this.staticEntities.generos?.find(genero => genero.genero[0].toLowerCase() === estudiante["Genero"][0].toLowerCase())
+        genero = genero && genero != undefined ? genero.id : null
+
+        //crear nuevo objeto estudiante
         const newElement: DBEstudiante = {
           nombre_de_usuario: nombre_de_usuario,
           rut: rut,
@@ -198,15 +212,18 @@ export class Synchronizer {
   }
 
   async send(actions : string[]) {
+    //asegurarse que hay data sincronizada
     if(!this.synchronizedData){
       return {
         status : false,
-        error: generateErrorMsg("la sincronizacion fallo o no se ha podido encontrar\nintentelo de nuevo")
+        error: genResErrorMsg("la sincronizacion fallo o no se ha podido encontrar\nintentelo de nuevo")
       }
     }
+    //aliminar acciones no seleccionadas
     if(!actions.includes("toCreate")){this.synchronizedData.toCreate = []}
     if(!actions.includes("toUpdate")){this.synchronizedData.toUpdate = []}
     if(!actions.includes("toDelete")){this.synchronizedData.toDelete = []}
+    //hacer peticion
     const api_url = `${process.env.NEXT_PUBLIC_API_URL}`
     try {
       const res = await axios.post(`${api_url}/estudiante/synchronize`, this.synchronizedData, this.headers)

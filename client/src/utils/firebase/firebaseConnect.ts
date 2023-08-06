@@ -1,6 +1,6 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth"
 import { initializeApp } from "firebase/app"
-import { generateErrorMsg } from "../axios/reqUtils"
+import { genResErrorMsg } from "../axios/reqUtils"
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_URL,
@@ -28,7 +28,7 @@ export async function signInWithGoogle() {
   if (!auth) {
     return {
       status: false,
-      error: generateErrorMsg("autenticacion no disponible en este momento")
+      error: genResErrorMsg("autenticacion no disponible en este momento")
     }
   }
   try {

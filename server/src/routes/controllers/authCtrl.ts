@@ -3,7 +3,7 @@ import firebaseAdmin from "firebase-admin"
 import regex from "../../utils/regex"
 import { ormDataSource } from "../../configs/ormDataSource"
 import { Usuario } from "../../models/usuario"
-import jwt, { decode } from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 import { verifySessionToken } from "../../utils/authUtils"
 
 async function getUsuarioToToken(id: number) {

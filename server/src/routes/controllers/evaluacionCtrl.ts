@@ -12,6 +12,7 @@ export async function getAllUsuarioRelated (req:Request,res:Response) {
         .leftJoinAndSelect("evaluacion.usuario","usuario")
         .leftJoinAndSelect("clase.curso","cusro")
         .where("evaluacion.usuario = :id",{id : id})
+        .orderBy("usuario.apellido", "ASC")
         .getMany()
 
         return res.status(200).json({

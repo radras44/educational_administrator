@@ -3,7 +3,7 @@ import firebaseAdmin from "firebase-admin"
 import { ormDataSource } from "./configs/ormDataSource"
 import fs from "fs"
 import path from "path"
-const port = process.env.PORT || 5000
+const port = process.env.LOCAL_PORT || 5000
 
 async function serverInit() {
     try {

@@ -10,7 +10,7 @@ export const getErrorMsg = (error: any): string => {
     }
 }
 
-export const generateErrorMsg = (msg : string) => {
+export const genResErrorMsg = (msg : string) => {
     return {response : {data : {error : msg}}}
 }
 
