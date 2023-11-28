@@ -12,8 +12,7 @@ export function TextFieldGenerator(props: GeneratorProps) {
     return (
         <Box sx={{
             display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap"
+            flexDirection: "column"
         }}>
             {props.attributes.map((attribute, index) => (
                 attribute.inputType === "textField" ?
@@ -41,8 +40,7 @@ export function SelectGenerator(props: GeneratorProps) {
     return (
         <Box sx={{
             display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap"
+            flexDirection : "column"
         }}>
             {props.attributes.map((attribute, index) => (
                 attribute.inputType === "select" ?

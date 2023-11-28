@@ -4,6 +4,7 @@ import { ControllerHelper } from "../utils/controllerHelper"
 
 import { Usuario } from "../models/usuario"
 import { updateClases } from "./controllers/usuarioCtrl"
+import { ormDataSource } from "../configs/ormDataSource"
 const router = express.Router()
 const controllerHelper = new ControllerHelper(Usuario,"usuario")
 
@@ -20,7 +21,7 @@ router.put(
 router.get(
     "/all",
     // (req,res,next) => {verifyPermissions(req,res,next,["ver-usuario"])},
-    (req, res) => {controllerHelper.getAll(req,res,["rol","curso","genero"],["clase"])}
+    async(req,res) => {controllerHelper.getAll(req,res,["rol","curso","genero",],["clase"])}
 )
 
 router.post(

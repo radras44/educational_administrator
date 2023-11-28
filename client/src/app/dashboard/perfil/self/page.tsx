@@ -1,6 +1,6 @@
 "use client"
 import { useSessionContext } from "@/app/providers/sessionProvider"
-import { ArticleList, ArticleTitle, KeyValueItem } from "@/components/Sheet/SheetContainer"
+import  Sheet from "@/components/Sheet"
 import { sxCenteredContainer, sxDefaultMargin, sxDefaultPadding, sxVContainer } from "@/sxStyles/sxStyles"
 import { sessionHeaders } from "@/utils/axios/headers"
 import { getOne } from "@/utils/axios/reqUtils"
@@ -44,43 +44,43 @@ export default function PerfilUsuario() {
                                 alignItems:"start",justifyContent:"center"
                             }}>
                                 <Box>
-                                    <ArticleTitle>Informacion Personal</ArticleTitle>
-                                    <ArticleList>
-                                        <KeyValueItem itemKey="Nombre: " value={perfil.nombre} />
-                                        <KeyValueItem itemKey="Apellido: " value={perfil.apellido} />
-                                        <KeyValueItem itemKey="Rut: " value={perfil.rut} />
-                                        <KeyValueItem itemKey="Genero: " value={perfil.genero?.genero} />
-                                    </ArticleList>
+                                    <Sheet.Title>Informacion Personal</Sheet.Title>
+                                    <Sheet.List>
+                                        <Sheet.KeyValueItem itemKey="Nombre: " value={perfil.nombre} />
+                                        <Sheet.KeyValueItem itemKey="Apellido: " value={perfil.apellido} />
+                                        <Sheet.KeyValueItem itemKey="Rut: " value={perfil.rut} />
+                                        <Sheet.KeyValueItem itemKey="Genero: " value={perfil.genero?.genero} />
+                                    </Sheet.List>
                                 </Box>
                                 <Box>
-                                    <ArticleTitle>Informacion de contacto</ArticleTitle>
-                                    <ArticleList>
-                                        <KeyValueItem itemKey="Email: " value={perfil.email} />
-                                    </ArticleList>
+                                    <Sheet.Title>Informacion de contacto</Sheet.Title>
+                                    <Sheet.List>
+                                        <Sheet.KeyValueItem itemKey="Email: " value={perfil.email} />
+                                    </Sheet.List>
                                 </Box>
                                 <Box>
-                                    <ArticleTitle>Informacion institucional</ArticleTitle>
-                                    <ArticleList>
-                                        <KeyValueItem itemKey="Curso: " value={perfil.curso?.curso} />
-                                        <KeyValueItem itemKey="Rol: " value={perfil.rol?.rol} />
-                                    </ArticleList>
+                                    <Sheet.Title>Informacion institucional</Sheet.Title>
+                                    <Sheet.List>
+                                        <Sheet.KeyValueItem itemKey="Curso: " value={perfil.curso?.curso} />
+                                        <Sheet.KeyValueItem itemKey="Rol: " value={perfil.rol?.rol} />
+                                    </Sheet.List>
                                 </Box>
                                 <Box>
-                                    <ArticleTitle>Informacion de registro</ArticleTitle>
-                                    <ArticleList>
-                                        <KeyValueItem
+                                    <Sheet.Title>Informacion de registro</Sheet.Title>
+                                    <Sheet.List>
+                                        <Sheet.KeyValueItem
                                             colors={["text.primary", "primary.main"]}
                                             itemKey="Fecha de creacion: " value={
                                                 String(perfil.create_date).split("T")[0]
                                             } />
-                                        <KeyValueItem
+                                        <Sheet.KeyValueItem
                                             colors={["text.primary", "primary.main"]}
                                             itemKey="Ultima actualizacion: " value={
                                                 `${String(perfil.update_date).split("T")[0]} 
                                             a las 
                                             ${String(perfil.update_date).split("T")[1].split(".")[0]}`
                                             } />
-                                    </ArticleList>
+                                    </Sheet.List>
                                 </Box>
                             </Grid>
                         </Grid>

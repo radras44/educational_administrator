@@ -1,5 +1,6 @@
+import ActionModal from "@/components/actionModal"
 import { SelectGenerator, TextFieldGenerator } from "@/components/form/DynamicInputs"
-import ModalButtons from "@/components/modal/modalButtons"
+
 import ModalTitle from "@/components/modal/modalTitle"
 import { sxCenteredContainer, sxDefaultMargin, sxModalContainer } from "@/sxStyles/sxStyles"
 import { sessionHeaders } from "@/utils/axios/headers"
@@ -46,51 +47,41 @@ export default function CrearUsuario(props: editModalProps) {
     }
 
     return (
-        <Modal open={props.open} onClose={props.onClose} sx={{...sxCenteredContainer()}}>
-            <Card sx={{ ...sxModalContainer() }}>
+        <Modal open={props.open} onClose={props.onClose} sx={{ ...sxCenteredContainer() }}>
+            <ActionModal.Content>
+                <ActionModal.Title text="Crear usuario" />
                 <form onSubmit={handleSubmit}>
-                    <Grid container>
-                        <Grid item xs={12}>
-                            <ModalTitle title="Crear usuario" />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextFieldGenerator
-                                currentData={currentData}
-                                setCurrentData={setCurrentData}
-                                attributes={textFieldAttributes}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <SelectGenerator
-                                currentData={currentData}
-                                setCurrentData={setCurrentData}
-                                attributes={selectAttributes}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <ModalButtons>
-                                <Button
-                                    sx={{ ...sxDefaultMargin() }}
-                                    startIcon={<Save />}
-                                    variant="contained"
-                                    type="submit"
-                                >Guardar</Button>
-                                <Button
-                                    sx={{ ...sxDefaultMargin() }}
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => { props.onClose({}, "backdropClick") }}
-                                >Cancel</Button>
-                            </ModalButtons>
-                            {
-                                errorMsg ?
-                                    <Typography variant="body1">{errorMsg}</Typography>
-                                    : null
-                            }
-                        </Grid>
-                    </Grid>
+                    <ActionModal.FormContent>
+                        <TextFieldGenerator
+                            currentData={currentData}
+                            setCurrentData={setCurrentData}
+                            attributes={textFieldAttributes}
+                        />
+                        <SelectGenerator
+                            currentData={currentData}
+                            setCurrentData={setCurrentData}
+                            attributes={selectAttributes}
+                        />
+                        <ActionModal.FormButtons>
+                            <Button
+                                startIcon={<Save />}
+                                color="success"
+                                variant="contained"
+                                type="submit"
+                            >Aplicar</Button>
+                            <Button
+                                variant="contained"
+                                onClick={() => { props.onClose({}, "backdropClick") }}
+                            >Voler</Button>
+                        </ActionModal.FormButtons>
+                        {
+                            errorMsg ?
+                                <Typography variant="body1">{errorMsg}</Typography>
+                                : null
+                        }
+                    </ActionModal.FormContent>
                 </form>
-            </Card>
+            </ActionModal.Content>
         </Modal>
     )
 }

@@ -7,7 +7,6 @@ import {
     UpdateDateColumn,
     DeleteDateColumn
 } from "typeorm"
-import { Nota } from "./nota"
 import { Clase } from "./clase"
 
 @Entity()

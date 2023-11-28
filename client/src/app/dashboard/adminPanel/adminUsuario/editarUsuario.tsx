@@ -1,11 +1,12 @@
+import ActionModal from "@/components/actionModal";
 import { TextFieldGenerator, SelectGenerator } from "@/components/form/DynamicInputs";
-import ModalButtons from "@/components/modal/modalButtons";
+
 import ModalTitle from "@/components/modal/modalTitle";
 import { sxCenteredContainer, sxDefaultMargin, sxModalContainer } from "@/sxStyles/sxStyles";
 import { sessionHeaders } from "@/utils/axios/headers";
 import { getErrorMsg, updateEntity, updateManyToMany } from "@/utils/axios/reqUtils";
-import { Clase } from "@/utils/interfaces/entityInterfaces";
-import { AttributesType, SelectedUsuario, StaticEntitiesType } from "@/utils/interfaces/interfaces";
+import { Clase, SelectedUsuario } from "@/utils/interfaces/entityInterfaces";
+import { AttributesType, StaticEntitiesType } from "@/utils/interfaces/interfaces";
 import { Save } from "@mui/icons-material";
 import { Modal, Grid, Paper, ListItem, ListItemIcon, Checkbox, ListItemText, Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
@@ -25,8 +26,8 @@ export function EditarUsuario(props: editModalProps) {
     const textFieldAttributes: AttributesType[] = [
         { label: "nombre_de_usuario", inputType: "textField", options: [], required: true },
         { label: "rut", inputType: "textField", options: [] },
-        {label: "nombre",inputType:"textField",options:[]},
-        {label: "apellido",inputType:"textField",options:[]}
+        { label: "nombre", inputType: "textField", options: [] },
+        { label: "apellido", inputType: "textField", options: [] }
     ];
 
     const selectAttributes: AttributesType[] = [
@@ -97,70 +98,60 @@ export function EditarUsuario(props: editModalProps) {
             }
         }
     }
-    return (
-        <Modal open={props.open} onClose={props.onClose} sx={{ ...sxCenteredContainer() }}>
-            <Paper elevation={4} sx={{ ...sxModalContainer() }}>
-                <form onSubmit={handleSubmit}>
-                    <Grid container sx={{maxWidth:1000}}>
-                        <Grid item xs={12}>
-                            <ModalTitle title="Editar Usuario"/>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Paper sx={{ maxHeight: "50vh", overflow: "auto" }}>
-                                {
-                                    props.clases.length > 0 ?
-                                        props.clases.map((clase, index) => (
-                                            <ListItem key={index}>
-                                                <ListItemIcon>
-                                                    <Checkbox
-                                                        value={clase.id}
-                                                        checked={currentData?.clases.includes(clase.id)}
-                                                        onChange={changeClase}
-                                                    />
-                                                </ListItemIcon>
-                                                <ListItemText primary=
-                                                    {`${clase.asignatura.asignatura} - ${String(clase.curso.curso).replace("_", " ")}`} />
-                                            </ListItem>
-                                        ))
-                                        : null
-                                }
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <TextFieldGenerator
-                                currentData={currentData}
-                                setCurrentData={setCurrentData}
-                                attributes={textFieldAttributes}
-                            />
-                            <SelectGenerator
-                                currentData={currentData}
-                                setCurrentData={setCurrentData}
-                                attributes={selectAttributes}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <ModalButtons>
-                                <Button
-                                    sx={{ ...sxDefaultMargin() }}
-                                    startIcon={<Save />}
-                                    variant="contained"
-                                    type="submit"
-                                >Guardar</Button>
-                                <Button
-                                    sx={{ ...sxDefaultMargin() }}
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => { props.onClose({}, "backdropClick") }}
-                                >Cancel</Button>
-                                {errorMsg ? <Typography color="error" variant="h6" sx={{ whiteSpace: "pre-wrap" }}>{errorMsg}</Typography>
-                                    : null}
 
-                            </ModalButtons>
-                            {/*botones*/}
-                        </Grid>
-                    </Grid>
+    return (
+        <Modal open={props.open} onClose={props.onClose}>
+            <ActionModal.Content>
+                <form onSubmit={handleSubmit}>
+                    <ActionModal.Title text="Editar Usuario" />
+                    <ActionModal.FormContent>
+                        <Paper sx={{ maxHeight: "50vh", overflow: "auto" }}>
+                            {
+                                props.clases.length > 0 ?
+                                    props.clases.map((clase, index) => (
+                                        <ListItem key={index}>
+                                            <ListItemIcon>
+                                                <Checkbox
+                                                    value={clase.id}
+                                                    checked={currentData?.clases.includes(clase.id)}
+                                                    onChange={changeClase}
+                                                />
+                                            </ListItemIcon>
+                                            <ListItemText primary=
+                                                {`${clase.asignatura.asignatura} - ${String(clase.curso.curso).replace("_", " ")}`} />
+                                        </ListItem>
+                                    ))
+                                    : null
+                            }
+                        </Paper>
+                        <TextFieldGenerator
+                            currentData={currentData}
+                            setCurrentData={setCurrentData}
+                            attributes={textFieldAttributes}
+                        />
+                        <SelectGenerator
+                            currentData={currentData}
+                            setCurrentData={setCurrentData}
+                            attributes={selectAttributes}
+                        />
+                        <ActionModal.FormButtons>
+                            <Button
+                                startIcon={<Save />}
+                                color="success"
+                                variant="contained"
+                                type="submit"
+                            >Aplicar</Button>
+                            <Button
+                                variant="contained"
+                                onClick={() => { props.onClose({}, "backdropClick") }}
+                            >Voler</Button>
+                            {errorMsg ? <Typography color="error" variant="h6" sx={{ whiteSpace: "pre-wrap" }}>{errorMsg}</Typography>
+                                : null}
+                        </ActionModal.FormButtons>
+                    </ActionModal.FormContent>
+
                 </form>
-            </Paper>
+            </ActionModal.Content>
         </Modal>
     );
 }

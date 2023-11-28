@@ -2,11 +2,17 @@ export interface Clase {
     id: number;
     clase : string;
     electivo: boolean;
-    asignatura: any;
-    curso: any;
+    asignatura: Asignatura;
+    curso: Curso;
     create_date: Date;
     update_date: Date;
 }
+
+export interface SelectedClase extends Omit<Clase, "asignatura" | "curso"> {
+    asignatura: number | null,
+    curso: number | null
+}
+
 
 export interface Usuario {
     id: number;
@@ -15,14 +21,21 @@ export interface Usuario {
     apellido?: string;
     rut?: string;
     email: string;
-    genero?: any;
-    rol?: any;
-    curso?: any;
-    clases: any[];
+    genero?: Genero;
+    rol?: Rol;
+    curso?: Curso;
+    clases: Clase[];
     anotacion: any[];
     evaluacion: any[];
     create_date: Date;
     update_date: Date;
+}
+
+export interface SelectedUsuario extends Omit<Usuario,"genero" | "curso" | "rol" | "clases">{
+    curso : number | null
+    genero : number | null
+    rol : number | null
+    clases : number[] 
 }
 
 export interface Estudiante {
@@ -41,7 +54,12 @@ export interface Estudiante {
     curso : Curso
     create_date: Date;
     update_date: Date;
+}
 
+export interface SelectedEstudiante extends Omit<Estudiante,"rol"|"curso"|"genero"> {
+    rol : number | null
+    genero : number | null
+    curso : number | null
 }
 
 export interface Evaluacion {
@@ -52,6 +70,11 @@ export interface Evaluacion {
     usuario : Usuario
     create_date: Date;
     update_date: Date;
+}
+
+export interface SelectedEvaluacion extends Omit<Evaluacion, "usuario" | "clase"> {
+    usuario: number | null
+    clase: number | null
 }
 
 export interface Genero {
@@ -95,6 +118,10 @@ export interface Rol {
     permisos : Permiso[]
     create_date : Date
     update_date : Date
+}
+
+export interface SelectedRol extends Rol {
+    permisosIdx: number[]
 }
 
 export interface Anotacion {

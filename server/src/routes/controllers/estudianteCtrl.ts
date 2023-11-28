@@ -23,6 +23,9 @@ export async function getAllCursoRelated(req:Request,res:Response){
 //crear actualizar y eliminar registros de estudinantes 
 export async function synchronize(req: Request, res: Response) {
     const { toCreate, toUpdate, toDelete } = req.body
+    console.log(req.body.toCreate)
+    console.log(req.body.toUpdate)
+    console.log(req.body.toDelete)
     if (!toCreate || !toUpdate || !toDelete) {
         return res.status(400).json({ error: "informacion insuficiente, sincronizacion errada" })
     }

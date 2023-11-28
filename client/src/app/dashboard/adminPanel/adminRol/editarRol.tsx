@@ -1,12 +1,14 @@
+import ActionModal from "@/components/actionModal"
 import { TextFieldGenerator } from "@/components/form/DynamicInputs"
-import ModalButtons from "@/components/modal/modalButtons"
+
 import ModalTitle from "@/components/modal/modalTitle"
 import { sxCenteredContainer, sxDefaultMargin, sxModalContainer } from "@/sxStyles/sxStyles"
 import { sessionHeaders } from "@/utils/axios/headers"
 import { getErrorMsg, updateEntity, updateManyToMany } from "@/utils/axios/reqUtils"
-import { AttributesType, SelectedRol } from "@/utils/interfaces/interfaces"
+import { AttributesType } from "@/utils/interfaces/interfaces"
+import { SelectedRol } from "@/utils/interfaces/entityInterfaces"
 import { Save, Cancel } from "@mui/icons-material"
-import { Modal, Grid,Card,Paper, ListItem, ListItemIcon, Checkbox, ListItemText, Button, Typography } from "@mui/material"
+import { Modal, Grid, Card, Paper, ListItem, ListItemIcon, Checkbox, ListItemText, Button, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 
 interface rolEditModalProps {
@@ -79,69 +81,58 @@ export function EditarRol(props: rolEditModalProps) {
 
     if (props.permisos) {
         return (
-            <Modal open={props.open} onClose={props.onClose} sx={{ ...sxCenteredContainer() }}>
-                <Card sx={{ ...sxModalContainer() }}>
-                    <form onSubmit={handleSubmit}>
-                        <Grid container sx={{maxWidth:800}}>
+            <Modal open={props.open} onClose={props.onClose} >
+                <ActionModal.Content>
+                    <ActionModal.Title text="Editar Rol" />
+                    <ActionModal.FormContent>
+                        <form onSubmit={handleSubmit}>
                             {/* interfaz de permisos -->*/}
-                            <Grid item xs={12}>
-                                <ModalTitle title="Editar Rol" />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <Paper sx={{ maxHeight: 300, overflow: 'auto' }}>
-                                    {props.permisos.map((permiso, index) => (
-                                        <ListItem key={index} sx={{ p: 0 }}>
-                                            <ListItemIcon>
-                                                <Checkbox
-                                                    value={permiso.id}
-                                                    checked={currentData.permisosIdx.includes(permiso.id)}
-                                                    onChange={handleChange}
-                                                />
-                                            </ListItemIcon>
-                                            <ListItemText primary={permiso.permiso} />
-                                        </ListItem>
-                                    ))}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={8}>
-                                <TextFieldGenerator
-                                    currentData={currentData}
-                                    setCurrentData={setCurrentData}
-                                    attributes={textFieldAttributes}
-                                />
-                            </Grid>
-                            {/* botones de acción --> */}
-                            <Grid item xs={12}>
-                                <ModalButtons>
-                                    <Button 
-                                    variant="contained" 
-                                    startIcon={<Save />} 
+                            <Paper sx={{ maxHeight: 300, overflow: 'auto' }}>
+                                {props.permisos.map((permiso, index) => (
+                                    <ListItem key={index} sx={{ p: 0 }}>
+                                        <ListItemIcon>
+                                            <Checkbox
+                                                value={permiso.id}
+                                                checked={currentData.permisosIdx.includes(permiso.id)}
+                                                onChange={handleChange}
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText primary={permiso.permiso} />
+                                    </ListItem>
+                                ))}
+                            </Paper>
+                            <TextFieldGenerator
+                                currentData={currentData}
+                                setCurrentData={setCurrentData}
+                                attributes={textFieldAttributes}
+                            />
+
+                            <ActionModal.FormButtons>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<Save />}
                                     type="submit"
-                                    sx={{...sxDefaultMargin()}}
-                                    >
-                                        Guardar
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        startIcon={<Cancel />}
-                                        sx={{...sxDefaultMargin()}}
-                                        onClick={() => {
-                                            props.onClose({}, 'backdropClick');
-                                        }}
-                                    >
-                                        Cancelar
-                                    </Button>
-                                </ModalButtons>
-                                {errorMsg ? (
-                                    <Typography color="error" variant="h6">
-                                        {errorMsg}
-                                    </Typography>
-                                ) : null}
-                            </Grid>
-                        </Grid>
-                    </form>
-                </Card>
+                                    color="success"
+                                >Aplicar
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<Cancel />}
+                                    onClick={() => {
+                                        props.onClose({}, 'backdropClick');
+                                    }}
+                                >Volver
+                                </Button>
+                            </ActionModal.FormButtons>
+                            {errorMsg ? (
+                                <Typography color="error" variant="h6">
+                                    {errorMsg}
+                                </Typography>
+                            ) : null}
+
+                        </form>
+                    </ActionModal.FormContent>
+                </ActionModal.Content>
             </Modal>
         );
     } else {

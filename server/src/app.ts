@@ -26,6 +26,7 @@ app.use(cors({
 app.use(bodyParser.json({limit:"10mb"}))
 
 //usar rutas
+app.get("/test",(req,res)=>{return res.json({mensaje : "prueba exitosa"})})
 app.use("/asignatura",asignaturaRoutes)
 app.use("/estudiante",estudianteRoutes)
 app.use("/curso",cursoRoutes)

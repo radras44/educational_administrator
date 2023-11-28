@@ -2,10 +2,10 @@ import express from "express"
 import { ControllerHelper } from "../utils/controllerHelper"
 import { Estudiante } from "../models/estudiante"
 import {getAllCursoRelated, synchronize } from "./controllers/estudianteCtrl"
+import { ormDataSource } from "../configs/ormDataSource"
 
 const controllerHelper = new ControllerHelper(Estudiante,"estudiante")
 const router = express.Router()
-
 
 router.get(
     "/all/related/curso/:id",
@@ -28,12 +28,12 @@ router.post(
 
 router.get(
     "/all",
-    (req, res) => { controllerHelper.getAll(req, res,["curso", "genero"]) }
+    async(req,res) => {controllerHelper.getAll(req,res,["rol","curso","genero"])}
 )
 //dinamic routes ====>
 router.get(
     "/:id",
-    (req, res) => { controllerHelper.get(req, res,["curso", "genero", "rol"]) }
+    async(req, res) => {controllerHelper.get(req,res,["rol","curso","genero"])}
 )
 
 router.put(

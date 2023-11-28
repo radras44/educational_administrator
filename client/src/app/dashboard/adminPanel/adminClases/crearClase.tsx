@@ -1,5 +1,5 @@
+import ActionModal from "@/components/actionModal"
 import { SelectGenerator } from "@/components/form/DynamicInputs"
-import ModalButtons from "@/components/modal/modalButtons"
 import ModalTitle from "@/components/modal/modalTitle"
 import { sxCenteredContainer, sxDefaultMargin, sxModalContainer } from "@/sxStyles/sxStyles"
 import { sessionHeaders } from "@/utils/axios/headers"
@@ -59,54 +59,46 @@ export function CrearClase(props: CrearClaseProps) {
     }
 
     return (
-        <Modal open={props.open} onClose={props.onClose} sx={{ ...sxCenteredContainer() }}>
-            <Card sx={{ ...sxModalContainer() }}>
+        <Modal open={props.open} onClose={props.onClose}>
+            <ActionModal.Content>
+                <ActionModal.Title text="Crear clase" />
                 <form onSubmit={handleSubmit}>
-                    <Grid container>
-                        <Grid item xs={12}>
-                            <ModalTitle title="Crear Clase" />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <SelectGenerator
-                                attributes={selectAttributes}
-                                currentData={currentData}
-                                setCurrentData={setCurrentData}
-                            />
-                            <ListItem>
-                                <ListItemIcon>
-                                    <Checkbox
-                                        value={currentData.electivo}
-                                        checked={currentData.electivo}
-                                        onChange={changeElectivo}
-                                    />
-                                </ListItemIcon>
-                                <ListItemText primary="Electivo" />
-                            </ListItem>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <ModalButtons>
-                                <Button
-                                    startIcon={<Save />}
-                                    variant="contained"
-                                    type="submit"
-                                    sx={{ ...sxDefaultMargin() }}
-                                >Crear</Button>
-                                <Button
-                                    color="error"
-                                    variant="contained"
-                                    onClick={() => { props.onClose({}, "backdropClick") }}
-                                    sx={{ ...sxDefaultMargin() }}
-                                >Cancelar</Button>
-                            </ModalButtons>
-                            {
-                                errorMsg ?
-                                    <Typography variant="h6" color="error">{errorMsg}</Typography>
-                                    : null
-                            }
-                        </Grid>
-                    </Grid>
+                    <ActionModal.FormContent>
+                        <SelectGenerator
+                            attributes={selectAttributes}
+                            currentData={currentData}
+                            setCurrentData={setCurrentData}
+                        />
+                        <ListItem>
+                            <ListItemIcon>
+                                <Checkbox
+                                    value={currentData.electivo}
+                                    checked={currentData.electivo}
+                                    onChange={changeElectivo}
+                                />
+                            </ListItemIcon>
+                            <ListItemText primary="Electivo" />
+                        </ListItem>
+                        <ActionModal.FormButtons>
+                            <Button
+                                startIcon={<Save />}
+                                color="success"
+                                variant="contained"
+                                type="submit"
+                            >Crear</Button>
+                            <Button
+                                variant="contained"
+                                onClick={() => { props.onClose({}, "backdropClick") }}
+                            >Cancelar</Button>
+                        </ActionModal.FormButtons>
+                        {
+                            errorMsg ?
+                                <Typography variant="h6" color="error">{errorMsg}</Typography>
+                                : null
+                        }
+                    </ActionModal.FormContent>
                 </form>
-            </Card>
+            </ActionModal.Content>
         </Modal>
     )
 }

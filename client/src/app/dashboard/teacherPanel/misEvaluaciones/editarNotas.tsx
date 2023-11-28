@@ -1,4 +1,4 @@
-import ModalButtons from "@/components/modal/modalButtons"
+
 import ModalTitle from "@/components/modal/modalTitle"
 import { sxCenteredContainer, sxDefaultMargin, sxModalContainer } from "@/sxStyles/sxStyles"
 import { sessionHeaders } from "@/utils/axios/headers"
@@ -8,6 +8,7 @@ import { Save } from "@mui/icons-material"
 import { Modal, Card, Grid, Box, Typography, TextField, Button } from "@mui/material"
 import axios from "axios"
 import { useState, useEffect } from "react"
+import ActionModal from "@/components/actionModal"
 
 interface EditarNotasnProps {
     open: boolean
@@ -18,7 +19,6 @@ interface EditarNotasnProps {
 export function EditarNotas(props: EditarNotasnProps) {
     const [currentData, setCurrentData] = useState<any[]>([])
     const [errorMsg, setErrorMsg] = useState<string | null>()
-
 
     async function getAllNotes() {
         const headers = sessionHeaders()
@@ -90,60 +90,48 @@ export function EditarNotas(props: EditarNotasnProps) {
     }, [])
     if (currentData) {
         return (
-            <Modal open={props.open} onClose={props.onClose} sx={{ ...sxCenteredContainer() }}>
-                <Card sx={{ ...sxModalContainer() }}>
+            <Modal open={props.open} onClose={props.onClose}>
+                <ActionModal.Content>
+                    <ActionModal.Title text="Editar notas" />
                     <form onSubmit={handleSubmit}>
-                        <Grid container sx={{maxWidth:800}}>
-                            <Grid item xs={12}>
-                                <ModalTitle title="Editar notas" />
-                            </Grid>
+                        <ActionModal.FormContent>
                             {
                                 currentData.length > 0 ?
-                                    <Grid item xs={12} sx={{ maxHeight: 300, overflow: "auto" }}>
-                                        {currentData.map((estudiante, index) => (
-                                            <Box key={index} sx={{
-                                                display: "flex",
-                                                flexDirection: "row",
-                                                alignItems: "center",
-                                                justifyContent: "space-between",
-                                                ...sxDefaultMargin()
-                                            }}>
-                                                <Typography>{`${estudiante.nombre} ${estudiante.apellido}`}</Typography>
-                                                <TextField
-                                                    label="Nota"
-                                                    onChange={(e) => { changeNota(e.target.value, index) }}
-                                                    value={estudiante.nota}
-                                                />
-                                            </Box>
-
-                                        ))}
-                                    </Grid>
-                                    :
-                                    <Grid item xs={12}>
-                                        <Typography variant="body1">No se han encontrado estudaintes</Typography>
-                                    </Grid>
+                                    currentData.map((estudiante, index) => (
+                                        <Box key={index} sx={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            gap : 2,
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                        }}>
+                                            <Typography>{`${estudiante.nombre} ${estudiante.apellido}`}</Typography>
+                                            <TextField
+                                                label="Nota"
+                                                onChange={(e) => { changeNota(e.target.value, index) }}
+                                                value={estudiante.nota}
+                                            />
+                                        </Box>
+                                    ))
+                                    : null
                             }
-                            <Grid item xs={12}>
-                                <ModalButtons>
-                                    <Button
-                                        startIcon={<Save />}
-                                        variant="contained"
-                                        type="submit"
-                                        sx={{...sxDefaultMargin()}}
-                                    >Guardar</Button>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        onClick={() => { props.onClose({}, "backdropClick") }}
-                                        sx={{...sxDefaultMargin()}}
-                                    >Cancel</Button>
-                                </ModalButtons>
-                                {errorMsg ? <Typography color="error" variant="h6" sx={{ whiteSpace: "pre-wrap" }}>{errorMsg}</Typography>
-                                    : null}
-                            </Grid>
-                        </Grid>
+                            <ActionModal.FormButtons>
+                                <Button
+                                    startIcon={<Save />}
+                                    variant="contained"
+                                    color="success"
+                                    type="submit"
+                                >Guardar</Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={() => { props.onClose({}, "backdropClick") }}
+                                >Cancel</Button>
+                            </ActionModal.FormButtons>
+                            {errorMsg ? <Typography color="error" variant="h6" sx={{ whiteSpace: "pre-wrap" }}>{errorMsg}</Typography>
+                                : null}
+                        </ActionModal.FormContent>
                     </form>
-                </Card>
+                </ActionModal.Content>
             </Modal>
         )
     } else {

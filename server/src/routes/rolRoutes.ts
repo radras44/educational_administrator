@@ -2,27 +2,28 @@ import express from "express"
 import { ControllerHelper } from "../utils/controllerHelper"
 import { Rol } from "../models/rol"
 import { updatePermisos } from "./controllers/rolCtrl"
+import { ormDataSource } from "../configs/ormDataSource"
 
 const router = express.Router()
 
-const controllerHelper = new ControllerHelper(Rol,"rol")
+const controllerHelper = new ControllerHelper(Rol, "rol")
 
 router.get(
     "/all",
-    // (req,res,next) => {verifyPermissions(req,res,next,["ver-rol"])},
-    (req, res) => { controllerHelper.getAll(req, res,["permisos"]) }
+    async(req, res) => {controllerHelper.getAll(req,res,[],["permiso"])}
 )
+
 router.post(
     "/",
-    (req,res) => {controllerHelper.create(req,res,[])}
+    (req, res) => { controllerHelper.create(req, res, []) }
 )
 router.delete(
     "/:id",
-    (req,res) => {controllerHelper.delete(req,res)}
+    (req, res) => { controllerHelper.delete(req, res) }
 )
 router.put(
     "/:id",
-    (req,res)=>{controllerHelper.update(req,res,[])}
+    (req, res) => { controllerHelper.update(req, res, []) }
 )
 router.put(
     "/permisos/:id",

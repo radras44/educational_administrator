@@ -1,12 +1,11 @@
-import { ArticleTitle, KeyValueItem } from "@/components/Sheet/SheetContainer"
-import ModalButtons from "@/components/modal/modalButtons"
-import ModalTitle from "@/components/modal/modalTitle"
+import Sheet from "@/components/Sheet"
+import ActionModal from "@/components/actionModal"
 import { sxCenteredContainer, sxDefaultMargin, sxHContainer, sxModalContainer } from "@/sxStyles/sxStyles"
 import { getErrorMsg } from "@/utils/axios/reqUtils"
 import { StaticEntitiesType } from "@/utils/interfaces/interfaces"
 import { SynchronizedDataType, Synchronizer } from "@/utils/synchronizer"
 import { ImportContacts, Sync } from "@mui/icons-material"
-import { Modal, Checkbox, Card, Grid, Button, Typography, Input, Box } from "@mui/material"
+import { Modal, Checkbox, Card, Grid, Button, Typography, Input, Box, Alert } from "@mui/material"
 import { useMemo, useState } from "react"
 
 interface ImportModalProps {
@@ -71,10 +70,10 @@ export function Sincronizar(props: ImportModalProps) {
 
     function changeSyncActions(e: React.ChangeEvent<HTMLInputElement>) {
         const value = String(e.target.value)
-        if(syncActions.includes(value)){
+        if (syncActions.includes(value)) {
             setSyncActions(prevState => prevState.filter(element => element != value))
-        }else{
-            setSyncActions([...syncActions,value])
+        } else {
+            setSyncActions([...syncActions, value])
         }
     }
 
@@ -89,15 +88,18 @@ export function Sincronizar(props: ImportModalProps) {
             setErrorMsg(getErrorMsg(res.error))
         }
     }
+
+    const checkOptionStyles = {
+        display: "flex", flexDirection: "row", gap: 2, alignItems: "center"
+    }
+
     return (
-        <Modal open={props.open} onClose={props.onClose} sx={{ ...sxCenteredContainer() }}>
-            <Card sx={{ ...sxModalContainer() }}>
+        <Modal open={props.open} onClose={props.onClose}>
+            <ActionModal.Content>
+                <ActionModal.Title text="Sincronizacion manual" />
                 <form onSubmit={handleSubmit}>
-                    <Grid container sx={{ maxWidth: 800 }}>
-                        <Grid item xs={12}>
-                            <ModalTitle title="Sincronizar Estudiantes" />
-                        </Grid>
-                        <Grid item xs={12} sx={{ ...sxHContainer() }}>
+                    <ActionModal.FormContent>
+                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
                             <label htmlFor="file-upload">
                                 <Input
                                     type="file"
@@ -107,109 +109,96 @@ export function Sincronizar(props: ImportModalProps) {
                                     inputProps={{ 'aria-label': 'Upload File' }}
                                 />
                                 <Button
-                                    sx={{ ...sxDefaultMargin() }}
-                                    variant="outlined"
+                                    variant="contained"
                                     component="span"
-                                >
-                                    Cargar archivo
+                                >Cargar archivo
                                 </Button>
                             </label>
                             {selectedFile && (
-                                <Typography
-                                    variant="body1"
-                                    sx={{ ...sxDefaultMargin() }}
-                                >
+                                <Typography variant="body1">
                                     Archivo: {selectedFile.name}
                                 </Typography>
                             )}
-                        </Grid>
+                        </Box>
                         {selectedFile ?
-                            <Grid item xs={12}>
-                                <ModalButtons>
-                                    <Button
-                                        startIcon={<Sync />}
-                                        variant="contained"
-                                        onClick={synchronizeCurrentData}
-                                        sx={{ ...sxDefaultMargin() }}
-                                    >
-                                        Sincronizar
-                                    </Button>
-                                </ModalButtons>
-                            </Grid>
+                            <ActionModal.FormButtons>
+                                <Button
+                                    startIcon={<Sync />}
+                                    variant="contained"
+                                    color="warning"
+                                    onClick={synchronizeCurrentData}>
+                                    Sincronizar
+                                </Button>
+                            </ActionModal.FormButtons>
                             : null
                         }
                         {/*mensaje de cambios */}
                         {
                             syncInfo ?
-                                <Grid item xs={12} sx={{ ...sxDefaultMargin() }}>
-                                    {syncInfo.toCreate.length > 0}
-                                    <ArticleTitle>Se realizaran los siguientes cambios:</ArticleTitle>
-                                    <Box sx={{ ...sxHContainer() }}>
+                                <Box sx={{display:"flex",flexDirection:"column",gap:2}}>
+                                    <Sheet.Title>Seleccione las acciones a realizar:</Sheet.Title>
+                                    <Box sx={checkOptionStyles} >
                                         <Checkbox
                                             checked={syncActions.includes("toCreate")}
                                             value={"toCreate"}
                                             onChange={changeSyncActions}
                                         />
-                                        <KeyValueItem
+                                        <Sheet.KeyValueItem
                                             itemKey="crear estudiante: "
                                             value={String(syncInfo.toCreate.length)}
                                         />
                                     </Box>
-                                    <Box sx={{ ...sxHContainer() }}>
+                                    <Box sx={checkOptionStyles} >
                                         <Checkbox
                                             checked={syncActions.includes("toUpdate")}
                                             value={"toUpdate"}
                                             onChange={changeSyncActions}
                                         />
-                                        <KeyValueItem
+                                        <Sheet.KeyValueItem
                                             itemKey="actualizar estudiante: "
                                             value={String(syncInfo.toUpdate.length)}
                                         />
                                     </Box>
-                                    <Box sx={{ ...sxHContainer() }}>
+                                    <Box sx={checkOptionStyles} >
                                         <Checkbox
                                             checked={syncActions.includes("toDelete")}
                                             value={"toDelete"}
                                             onChange={changeSyncActions}
                                         />
-                                        <KeyValueItem
+                                        <Sheet.KeyValueItem
                                             itemKey="eliminar estudiante: "
                                             value={String(syncInfo.toDelete.length)}
                                         />
                                     </Box>
-                                </Grid>
+                                </Box>
                                 : null
                         }
-                        <Grid item xs={12}>
-                            <ModalButtons>
-                                {
-                                    syncInfo ?
-                                        <Button
-                                            sx={{ ...sxDefaultMargin() }}
-                                            type="submit"
-                                            variant="contained"
-                                            startIcon={<ImportContacts />}
-                                        >Comenzar importacion</Button>
-                                        : null
-                                }
-                                <Button
-                                    sx={{ ...sxDefaultMargin() }}
-                                    variant="contained"
-                                    color="error"
-                                    onClick={() => {
-                                        props.onClose({}, "backdropClick")
-                                    }}
-                                >Cancelar</Button>
-                            </ModalButtons>
+                        <ActionModal.FormButtons>
                             {
-                                errorMsg ?
-                                    <Typography noWrap={false} variant="h6" color="error">{errorMsg}</Typography>
+                                syncInfo ?
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="success"
+                                        startIcon={<ImportContacts />}
+                                    >Importar</Button>
                                     : null
                             }
-                        </Grid>
-                    </Grid>
+                            <Button
+                                variant="contained"
+                                onClick={() => {
+                                    props.onClose({}, "backdropClick")
+                                }}
+                            >Cancelar</Button>
+                        </ActionModal.FormButtons>
+                        {
+                            errorMsg ?
+                                <Alert severity="error">{errorMsg}</Alert>
+                                : null
+                        }
+                    </ActionModal.FormContent>
                 </form>
-            </Card>
+            </ActionModal.Content>
         </Modal>
     )
 }

@@ -1,6 +1,6 @@
 import { Box, BoxProps, Typography } from "@mui/material"
 
-export function ArticleTitle(props: { children: React.ReactNode }) {
+function Title(props: { children: React.ReactNode }) {
     return (
         <Typography
             sx={{
@@ -12,7 +12,7 @@ export function ArticleTitle(props: { children: React.ReactNode }) {
     )
 }
 
-export function KeyValueItem({ itemKey, value, colors }: { itemKey: string, value: string | undefined, colors?: [string, string] }) {
+function KeyValueItem({ itemKey, value, colors }: { itemKey: string, value: string | undefined, colors?: [string, string] }) {
     return (
         <Box>
             <Typography
@@ -42,7 +42,7 @@ export function KeyValueItem({ itemKey, value, colors }: { itemKey: string, valu
     )
 }
 
-export function ArticleList({ children }: { children: React.ReactNode }) {
+function List({ children }: { children: React.ReactNode }) {
     return (
         <Box sx={{
             ml: 5,
@@ -53,3 +53,5 @@ export function ArticleList({ children }: { children: React.ReactNode }) {
         </Box>
     )
 }
+
+export default {Title,List,KeyValueItem}

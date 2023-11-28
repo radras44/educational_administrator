@@ -5,6 +5,7 @@ import { EntityTarget } from "typeorm"
 import Joi from "joi"
 import schemaArray, { validateSchema } from "./entitySchemas";
 import regex from "./regex";
+import { Estudiante } from "../models/estudiante";
 export class ControllerHelper {
     entity: EntityTarget<any>;
     entityLabel: string;
@@ -79,6 +80,7 @@ export class ControllerHelper {
             const query = await ormDataSource.getRepository(this.entity)
                 .createQueryBuilder(this.entityLabel);
             //agregar relaciones
+            console.log(Estudiante.name)
             if (relations.length > 0) {
                 relations.forEach(relation => {
                     query.leftJoinAndSelect(`${this.entityLabel}.${relation}`, relation);

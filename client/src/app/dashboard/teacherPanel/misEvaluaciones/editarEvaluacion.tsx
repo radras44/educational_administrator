@@ -1,10 +1,12 @@
+import ActionModal from "@/components/actionModal"
 import { TextFieldGenerator, SelectGenerator } from "@/components/form/DynamicInputs"
-import ModalButtons from "@/components/modal/modalButtons"
+
 import ModalTitle from "@/components/modal/modalTitle"
 import { sxCenteredContainer, sxDefaultMargin, sxModalContainer } from "@/sxStyles/sxStyles"
 import { sessionHeaders } from "@/utils/axios/headers"
 import { updateEntity, getErrorMsg } from "@/utils/axios/reqUtils"
-import { AttributesType, SelectedEvaluacion } from "@/utils/interfaces/interfaces"
+import { SelectedEvaluacion } from "@/utils/interfaces/entityInterfaces"
+import { AttributesType } from "@/utils/interfaces/interfaces"
 import { Save } from "@mui/icons-material"
 import { Modal, Card, Grid, Button, Typography } from "@mui/material"
 import { useState } from "react"
@@ -40,48 +42,38 @@ export function EditarEvaluacion(props: EditarEvaluacionProps) {
     }
     console.log(currentData)
     return (
-        <Modal open={props.open} onClose={props.onClose} sx={{ ...sxCenteredContainer() }}>
-            <Card sx={{ ...sxModalContainer() }}>
+        <Modal open={props.open} onClose={props.onClose}>
+            <ActionModal.Content>
+                <ActionModal.Title text="Editar evluacion" />
                 <form onSubmit={handleSubmit}>
-                    <Grid container sx={{maxWidth:800}}>
-                        <Grid item xs={12}>
-                            <ModalTitle title="Editar evluacion"/>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextFieldGenerator
-                                attributes={textFieldAttributes}
-                                currentData={currentData}
-                                setCurrentData={setCurrentData}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <SelectGenerator
-                                attributes={selectAttributes}
-                                currentData={currentData}
-                                setCurrentData={setCurrentData}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <ModalButtons>
-                                <Button
-                                    startIcon={<Save />}
-                                    variant="contained"
-                                    type="submit"
-                                    sx={{...sxDefaultMargin()}}
-                                >Guardar</Button>
-                                <Button
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => { props.onClose({}, "backdropClick") }}
-                                    sx={{...sxDefaultMargin()}}
-                                >Cancel</Button>
-                            </ModalButtons>
-                            {errorMsg ? <Typography color="error" variant="h6" sx={{ whiteSpace: "pre-wrap" }}>{errorMsg}</Typography>
-                                : null}
-                        </Grid>
-                    </Grid>
+                    <ActionModal.FormContent>
+                        <TextFieldGenerator
+                            attributes={textFieldAttributes}
+                            currentData={currentData}
+                            setCurrentData={setCurrentData}
+                        />
+                        <SelectGenerator
+                            attributes={selectAttributes}
+                            currentData={currentData}
+                            setCurrentData={setCurrentData}
+                        />
+                        <ActionModal.FormButtons>
+                            <Button
+                                startIcon={<Save />}
+                                variant="contained"
+                                color="success"
+                                type="submit"
+                            >Aplicar</Button>
+                            <Button
+                                variant="contained"
+                                onClick={() => { props.onClose({}, "backdropClick") }}
+                            >Cancel</Button>
+                        </ActionModal.FormButtons>
+                        {errorMsg ? <Typography color="error" variant="h6" sx={{ whiteSpace: "pre-wrap" }}>{errorMsg}</Typography>
+                            : null}
+                    </ActionModal.FormContent>
                 </form>
-            </Card>
+            </ActionModal.Content>
         </Modal>
     )
 }

@@ -7,7 +7,7 @@ import {useSessionContext,contextProps } from "@/app/providers/sessionProvider";
 import ListLink from "../listAndTables/listLink";
 import ListFunction from "../listAndTables/listFunction";
 import { useRouter } from "next/navigation";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import {blueGrey} from "@mui/material/colors"
 export default function Navbar() {
     const router = useRouter()
     const sessionContext = useSessionContext()
@@ -19,7 +19,7 @@ export default function Navbar() {
     if (sessionContext && sessionContext.session) {
         return (
             <Box>
-                <AppBar position="static">
+                <AppBar position="static" sx={{backgroundColor : blueGrey[700]}}>
                     <Toolbar sx={{
                         display: "flex", flexDirection: "row", justifyContent: "end"
                     }}>
@@ -31,7 +31,7 @@ export default function Navbar() {
                     </Toolbar>
                 </AppBar>
                 <Drawer anchor="left" open={drawerState} onClose={handleCloseDrawer}>
-                    <DrawerContent router={router} sessionContext={sessionContext} permisos={sessionContext.permisos || []} />
+                    <DrawerContent sessionContext={sessionContext} permisos={sessionContext.permisos || []} />
                 </Drawer>
             </Box>
         )
@@ -45,7 +45,6 @@ export default function Navbar() {
 interface drawerContentProps {
     permisos: string[]
     sessionContext : contextProps
-    router : AppRouterInstance
 }
 export function DrawerContent(props: drawerContentProps) {
     function handleLogOut () {        

@@ -5,19 +5,16 @@ import { sxDefaultMargin } from "@/sxStyles/sxStyles";
 import { sessionHeaders } from "@/utils/axios/headers";
 import { getAllRelated } from "@/utils/axios/reqUtils";
 import { useStaticEntities } from "@/utils/customHooks";
-import { Evaluacion } from "@/utils/interfaces/entityInterfaces";
+import { Evaluacion, SelectedEvaluacion } from "@/utils/interfaces/entityInterfaces";
 import { Add, Checklist, Edit } from "@mui/icons-material";
 import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { useEffect, useMemo, useState } from "react"
 import { EditarNotas } from "./editarNotas";
-import PanelToolBar from "@/components/bars/panelToolBar";
 import { CrearEvaluacion } from "./crearEvaluacion";
 import { EditarEvaluacion } from "./editarEvaluacion";
+import PanelPage from "@/components/panelPage";
+import { useModal } from "@/hooks/hooks";
 
-interface SelectedEvaluacion extends Omit<Evaluacion, "usuario" | "clase"> {
-    usuario: number
-    clase: number
-}
 
 export default function MisEvaluaciones() {
     const numbero_de_evaluacionOptions = useMemo(() => {
@@ -38,31 +35,39 @@ export default function MisEvaluaciones() {
     async function getAllEvaluaciones() {
         if (sessionContext && sessionContext.usuario) {
             const headers = sessionHeaders()
-            const res = await getAllRelated("evaluacion", "usuario", headers, sessionContext.usuario.id, setEvaluaciones)
+            await getAllRelated("evaluacion", "usuario", headers, sessionContext.usuario.id, setEvaluaciones)
         }
     }
     //modals
-    const [showCrearEvaluacion, setShowCrearEvaluacion] = useState<boolean>(false)
-    function openCrearEvaluacion() { setShowCrearEvaluacion(true) }
-    function closeCrearEvaluacion() { setShowCrearEvaluacion(false) }
-    const [showEditarEvaluacion, setShowEditarEvaluacion] = useState<boolean>(false)
-    function openEditarEvaluacion() { setShowEditarEvaluacion(true) }
-    function closeEditarEvaluacion() { setShowEditarEvaluacion(false) }
-    const [showEditarNotas, setShowEditarNotas] = useState<boolean>(false)
-    function openEditarNotas() { setShowEditarNotas(true) }
-    function closeEditarNotas() { setShowEditarNotas(false) }
+    const createModal = useModal()
+    const editModal = useModal()
+    const editNotesModal = useModal()
+
+    function editEvaluation(evaluation: Evaluacion) {
+        setSelectedEvaluacion({
+            ...evaluation,
+            clase: evaluation.clase ? evaluation.clase.id : null,
+            usuario: evaluation.usuario ? evaluation.usuario.id : null
+        })
+        editModal.open()
+    }
+
+    function editEvaluationNotes(evaluation: Evaluacion) {
+        setFullSelectedEvaluacoin(evaluation)
+        editNotesModal.open()
+    }
 
     useEffect(() => {
         getAllEvaluaciones()
     }, [])
 
     return (
-        <Grid container>
+        <PanelPage.CContainer>
             {
-                showEditarEvaluacion && selectedEvaluacion ?
+                editModal.show && selectedEvaluacion ?
                     <EditarEvaluacion
-                        open={showEditarEvaluacion}
-                        onClose={closeEditarEvaluacion}
+                        open={editModal.show}
+                        onClose={editModal.close}
                         selectedEvaluacion={selectedEvaluacion}
                         getAllEvaluaciones={getAllEvaluaciones}
                         numero_de_evaluacionOptions={numbero_de_evaluacionOptions}
@@ -70,19 +75,19 @@ export default function MisEvaluaciones() {
                     : null
             }
             {
-                showEditarNotas && fullSelectedEvaluacion ?
+                editNotesModal.show && fullSelectedEvaluacion ?
                     <EditarNotas
-                        open={showEditarNotas}
-                        onClose={closeEditarNotas}
+                        open={editNotesModal.show}
+                        onClose={editNotesModal.close}
                         fullSelectedEvaluacion={fullSelectedEvaluacion}
                     />
                     : null
             }
             {
-                showCrearEvaluacion && staticEntities && sessionContext && sessionContext.usuario ?
+                createModal.show && staticEntities && sessionContext && sessionContext.usuario ?
                     <CrearEvaluacion
-                        open={showCrearEvaluacion}
-                        onClose={closeCrearEvaluacion}
+                        open={createModal.show}
+                        onClose={createModal.close}
                         staticEntities={staticEntities}
                         getAllEvaluaciones={getAllEvaluaciones}
                         relatedClases={sessionContext.usuario.clases}
@@ -91,62 +96,23 @@ export default function MisEvaluaciones() {
                     />
                     : null
             }
-            <Grid item xs={12}>
-                <PanelToolBar>
-                    <Button 
-                    startIcon={<Add />} 
-                    variant="contained" 
-                    onClick={openCrearEvaluacion}
-                    sx={{...sxDefaultMargin()}}
-                    >Crear
-                    </Button>
-                </PanelToolBar>
-            </Grid>
-            <Grid item xs={12}>
-                <TableContainer sx={{ maxHeight: 600, overflow: "auto" }}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ minWidth: 200 }}>Evaluacion</TableCell>
-                                <TableCell sx={{ minWidth: 400 }}>Clase</TableCell>
-                                <TableCell align="center">Acciones</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                evaluaciones.length > 0 && sessionContext && sessionContext.usuario ?
-                                    evaluaciones.map((evaluacion: Evaluacion, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>{evaluacion.evaluacion}</TableCell>
-                                            <TableCell>{evaluacion.clase.clase}</TableCell>
-                                            <TableCell align="center">
-                                                <Button onClick={() => {
-                                                    setFullSelectedEvaluacoin(evaluacion)
-                                                    openEditarNotas()
-                                                }}>
-                                                    <Checklist />
-                                                </Button>
-                                                <Button onClick={() => {
-                                                    const data = {
-                                                        ...evaluacion,
-                                                        clase: evaluacion.clase.id,
-                                                        usuario: evaluacion.usuario.id
-                                                    }
-                                                    setSelectedEvaluacion(data)
-                                                    openEditarEvaluacion()
-                                                }}>
-                                                    <Edit />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                    : null
-                            }
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Grid>
-        </Grid>
+
+            <PanelPage.ToolBar>
+                <Button onClick={createModal.open}>
+                    <Add />
+                </Button>
+            </PanelPage.ToolBar>
+            <PanelPage.Table
+                data={evaluaciones}
+                options={[
+                    { icon: <Edit />, action: editEvaluation },
+                    { icon: <Checklist />, action: editEvaluationNotes }
+                ]}
+                keysToShow={["id", "evaluacion"]}
+                keyLabels={["id", "evaluacion"]}
+            />
+
+        </PanelPage.CContainer>
     )
 }
 
