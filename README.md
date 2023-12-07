@@ -83,7 +83,6 @@ Para no tener que editar ni agregar estudiantes, la aplicación cuenta con un si
 - En caso de que falle, se hará un backroll y se enviara un error
 
 ![imagen](https://github.com/radras44/educational_administrator/assets/97988334/b93033d0-a452-4aa8-8b3c-e281cbb99fb0)
-![imagen](https://github.com/radras44/educational_administrator/assets/97988334/b6197807-e298-4f2e-a979-aefceaac7253)
 
 ## Libreta de notas
 
@@ -95,7 +94,7 @@ Para ingresar notas se hace a través de la evaluación que corresponde a una cl
 ## Diseño responsivo
 
 ![imagen](https://github.com/radras44/educational_administrator/assets/97988334/d1c8bb78-4219-4246-b8f8-5a5217488602)
-
+![imagen](https://github.com/radras44/educational_administrator/assets/97988334/b6197807-e298-4f2e-a979-aefceaac7253)
 
 # Instalacion
 ### cliente:
