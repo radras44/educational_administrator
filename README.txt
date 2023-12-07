@@ -1,29 +1,79 @@
-Archivos a configurar para poder usar las apps:
+#Caracteristicas
 
---------------------------------------------------------//
-client:
+### Autenticacion con gmail:
+La aplicacion se autentica a travez de auth2.0 en firebase haciendo uso del provedor de google, tambien verifica que el correo pertenezca al dominio de la institucion educativa en cuestion
+
+![imagen](https://github.com/radras44/educational_administrator/assets/97988334/92ee5ef8-a093-4775-b779-8d7f45c69c04)
+
+### Modelamiento de la base de datos
+
+![diagrama entidad relacion LBA_plataform](https://github.com/radras44/educational_administrator/assets/97988334/cee2995c-6dd4-4750-9050-1962e40d9acd)
+
+La aplicacion esta pensada para administrativos, no para estudiantes, por lo que se agrego la tabla estudiantes aparte y no como un rol, esta desicion tambien se tomo en base a la diferencia de columnas entre los estudiantes y los demas roles.
+
+## Panel de Administracion:
+
+![imagen](https://github.com/radras44/educational_administrator/assets/97988334/7354ec9f-c892-4e93-b5df-b428326ad648)
+
+El panel cuanta con varias secciones, estas se renderizaran dependiendo de los permisos que tenga el usuario, esto tambien ocurre con el menu lateral
+
+![imagen](https://github.com/radras44/educational_administrator/assets/97988334/e81ef54b-fdc0-4928-9f49-5b18f586b404)
+
+### Filtros
+Los filtros son componentes reutilizables, estos solicitaran cierta informacion que debe cumplir con ciertos tipos de datos especificos para poder utilizarse, algo similar pasa con la "ordenar por":
+
+```javascript
+   {
+                        props.staticEntities.cursos &&
+                            <FilterByCurso
+                                cursos={props.staticEntities.cursos}
+                                setFilters={setFilters}
+                                filters={filters}
+                            />
+                    }
+                    {
+                        props.staticEntities.generos &&
+                            <FilterByGenero
+                                generos={props.staticEntities.generos}
+                                setFilters={setFilters}
+                                filters={filters}
+                            />
+                    }
+                    <OrderBy
+                        orders={orders}
+                        setFilters={setFilters}
+                        filters={filters}
+                    />
+
+```
+![imagen](https://github.com/radras44/educational_administrator/assets/97988334/07adb96a-d3ec-4ae2-bd98-a68a93c17c6d)
+
+## Sincronizacion
+Para no tener que editar ni agregar estudiantes, la aplicacion cuenta con un sistema de sincronizacion manual, se debe seguir los siguientes pasos
+
+- Descargar el excel con la nomina de matriculas desde la plataforma del SIGE
+- Ir al panel de estudiantes y apretar el icono de sincronizacion
+- importar el archivo excel descargado 
+- Se le informara los cambios que se van a realizar y podra elegir cuales ejecutar
+
+![imagen](https://github.com/radras44/educational_administrator/assets/97988334/21077f8a-de62-45c6-b774-4b0965b2cfaa)
+
+# Instalacion
+### cliente:
 .env.local: "archivo que aloja las variables de entorno en el client con next"
 
-la clave publica se puede obtener en la consola de firebase:
+la clave publica se puede obtener en la consola de firebase: https://firebase.google.com/?gad_source=1&gclid=EAIaIQobChMItpuFoKT8ggMVQyitBh11xg5pEAAYASAAEgJnhfD_BwE&gclsrc=aw.ds&hl=es-419
+
 miproyecto => descripcion general(engranaje) => configuracion de proyecto
 
---------------------------------------------------------//
-servidor:
+
+### servidor:
 .env : "archivo que aloja las variables de entorno del servidor"
 src/private/firebaseConfig.json : archivo que aloja clave privada de firebase
 
 la clave privada se puede obtener en la consola de firebase:
 miproyecto => descripcion general(engranaje) => configuracion del proyecto => cuentas de servicio => generar nueva clave privada
 
-
+### Data de prueba
 La aplicacion tiene la funcion de sincronizar manualmente con los estudiantes en el SIGE
-por lo que si necesita data de prueba puede descargar el excel que provee el sigue con todos los estudiante
-cambiar el formato a xlsx y sincronizarlo o exportarlos, ahi sale para marcar las acciones que desea realizar
-en caso contrario, puede usar el archivo sql adjunto en el repositorio
-
-NOTAS:
-Falta agregar el distinguir entre clases que son electivas, esta el atributo, pero esto depende mucho de la institucion por lo que no lo he hecho, la idea seria agregar un atributo manytomany llamado Electivos en la tabla estudiantes
-luego al solicitar los alumnos acordes a una evaluacion verificar si la clase es electiva o no, en caso de serlo buscar si el id de la evaluacion si encuentra dentro de "electivos" en cada estudiante
-
-obtener alumnos de curso => filtrar en caso de la evaluacion ser de una clase electiva => el resto
-obviamente hay otros enfoques para esto, como hacer que cada alumno tenga que inscribirse en cada clase
+-Si necesita data de prueba puede ver el archivo excel que esta en el directorio assets
